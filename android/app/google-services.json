@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "826166015290",
+    "project_id": "mini-project-27d3a",
+    "storage_bucket": "mini-project-27d3a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:826166015290:android:f8144b874811c48a6a0c03",
+        "android_client_info": {
+          "package_name": "com.traehugh.login_reg"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAMy_6Btf89k87Q1z-AqNgZLKtMjTk2KYE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
