@@ -1,30 +1,27 @@
-
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class RegistrationPage extends StatefulWidget {
+  final VoidCallback showLoginPage;
+
+  const RegistrationPage({super.key, required this.showLoginPage});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<RegistrationPage> createState() => _RegistrationPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _RegistrationPageState extends State<RegistrationPage> {
+
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  Future signIn() async {
-    await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: _emailController.text.trim(),
-        password: _passwordController.text.trim());
-  }
 
-//removes the data when not being used.
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
+
+  Future 
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +52,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
 
-                      const Text("Let's Continue the Journey Together",
+                      const Text("Crafting Forever Starts Here",
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
@@ -111,7 +108,7 @@ class _LoginPageState extends State<LoginPage> {
                       Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 25),
                           child: GestureDetector(
-                            onTap: signIn,
+                            onTap: signUp,
                             child: Container(
                               padding: EdgeInsets.all(16),
                               decoration: BoxDecoration(
@@ -120,7 +117,7 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                               child: const Center(
                                   child: Text(
-                                "Sign in",
+                                "Register",
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontFamily: "Poppins",
