@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class RegistrationPage extends StatefulWidget {
@@ -10,9 +11,9 @@ class RegistrationPage extends StatefulWidget {
 }
 
 class _RegistrationPageState extends State<RegistrationPage> {
-
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
 
   @override
   void dispose() {
@@ -21,21 +22,44 @@ class _RegistrationPageState extends State<RegistrationPage> {
     super.dispose();
   }
 
-  Future 
+  Future signUp() async {
+    if (passwordConfirmed()) {
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: _emailController.text.trim(),
+          password: _passwordController.text.trim());
+    }
+  }
+
+  bool passwordConfirmed() {
+    if (_passwordController.text.trim() ==
+        _confirmPasswordController.text.trim()) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+bool isVisible(){
+  if (passwordConfirmed() == false){
+    return true;
+  } else {
+   return false;
+  }
+}
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Color.fromARGB(255, 243, 237, 230),
+        backgroundColor: const Color.fromARGB(255, 243, 237, 230),
         body: SafeArea(
           child: Padding(
-            padding: EdgeInsets.all(10.0),
+            padding: const EdgeInsets.all(10.0),
             child: Center(
               child: SingleChildScrollView(
                 child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.diamond_outlined,
+                      const Icon(Icons.diamond_outlined,
                           size: 150, color: Color.fromARGB(255, 13, 170, 167)),
 
                       //text saying Logo
@@ -64,15 +88,15 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         padding: const EdgeInsets.symmetric(horizontal: 25),
                         child: Container(
                           decoration: BoxDecoration(
-                            color: Color.fromARGB(255, 243, 228, 228),
+                            color: const Color.fromARGB(255, 243, 228, 228),
                             border: Border.all(color: Colors.white),
                             borderRadius: BorderRadius.circular(14),
                           ),
                           child: Padding(
-                            padding: EdgeInsets.only(left: 20.0),
+                            padding: const EdgeInsets.only(left: 20.0),
                             child: TextField(
                               controller: _emailController,
-                              decoration: InputDecoration(
+                              decoration: const InputDecoration(
                                 hintText: 'Email',
                                 border: InputBorder.none,
                               ),
@@ -87,16 +111,16 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         padding: const EdgeInsets.symmetric(horizontal: 25),
                         child: Container(
                           decoration: BoxDecoration(
-                            color: Color.fromARGB(255, 243, 228, 228),
+                            color: const Color.fromARGB(255, 243, 228, 228),
                             border: Border.all(color: Colors.white),
                             borderRadius: BorderRadius.circular(14),
                           ),
                           child: Padding(
-                            padding: EdgeInsets.only(left: 20.0),
+                            padding: const EdgeInsets.only(left: 20.0),
                             child: TextField(
                               controller: _passwordController,
                               obscureText: true,
-                              decoration: InputDecoration(
+                              decoration: const InputDecoration(
                                 hintText: 'Password',
                                 border: InputBorder.none,
                               ),
@@ -104,15 +128,41 @@ class _RegistrationPageState extends State<RegistrationPage> {
                           ),
                         ),
                       ),
+
+                      //confirm user password / validation
                       const SizedBox(height: 10),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 25),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: const Color.fromARGB(255, 243, 228, 228),
+                            border: Border.all(color: Colors.white),
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 20.0),
+                            child: TextField(
+                              controller: _confirmPasswordController,
+                              obscureText: true,
+                              decoration: const InputDecoration(
+                                hintText: 'Confirm Password',
+                                border: InputBorder.none,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 10),
+                    
                       Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 25),
                           child: GestureDetector(
                             onTap: signUp,
                             child: Container(
-                              padding: EdgeInsets.all(16),
+                              padding: const EdgeInsets.all(16),
                               decoration: BoxDecoration(
-                                color: Color.fromARGB(255, 75, 0, 87),
+                                color: const Color.fromARGB(255, 75, 0, 87),
                                 borderRadius: BorderRadius.circular(14),
                               ),
                               child: const Center(
@@ -123,19 +173,24 @@ class _RegistrationPageState extends State<RegistrationPage> {
                                   fontFamily: "Poppins",
                                   fontSize: 14,
                                 ),
-                              )),
+                              ),
+                              ),
                             ),
-                          )),
+                          ),
+                          ),
                       const SizedBox(height: 15),
-                      const Row(
+                      Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text("Not a member?",
+                          const Text("Already a member?",
                               style: TextStyle(fontWeight: FontWeight.bold)),
-                          Text(" Register now",
-                              style: TextStyle(
-                                color: Color.fromARGB(255, 13, 170, 167),
-                              )),
+                          GestureDetector(
+                            onTap: widget.showLoginPage,
+                            child: const Text(" Login now",
+                                style: TextStyle(
+                                  color: Color.fromARGB(255, 13, 170, 167),
+                                )),
+                          ),
                         ],
                       )
                     ]),

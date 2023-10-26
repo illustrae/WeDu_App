@@ -13,12 +13,18 @@ class _AuthPageState extends State<AuthPage> {
 
   bool showLoginPage = true;
 
+  void toggleScreens(){
+    setState(() {
+      showLoginPage = !showLoginPage;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     if(showLoginPage){
-      return LoginPage( showRegistrationPage: showRegistrationPage );
+      return LoginPage(showRegistrationPage: toggleScreens);
     } else {
-      return RegistrationPage();
+      return RegistrationPage(showLoginPage: toggleScreens);
     }
   }
 }
