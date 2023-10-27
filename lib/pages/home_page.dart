@@ -6,14 +6,13 @@ import 'package:login_reg/pages/messages.dart';
 
 class HomePage extends StatefulWidget {
   final int initialHomePageIndex;
-  const HomePage({super.key ,required this.initialHomePageIndex});
+  const HomePage({super.key, required this.initialHomePageIndex});
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-
   @override
   void initState() {
     super.initState();

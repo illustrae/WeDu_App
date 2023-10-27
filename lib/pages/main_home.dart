@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:login_reg/components/topcards.dart';
 
 class MainHome extends StatefulWidget {
   const MainHome({super.key});
@@ -13,7 +14,6 @@ class _MainHomeState extends State<MainHome> {
   final user = FirebaseAuth.instance.currentUser;
   final currentDate = DateTime.now();
 
-
   @override
   Widget build(BuildContext context) {
     String formattedDate = DateFormat.MMMEd().format(currentDate);
@@ -22,14 +22,14 @@ class _MainHomeState extends State<MainHome> {
         // backgroundColor: Color.fromARGB(255, 127, 69, 136),
         body: Container(
           decoration: const BoxDecoration(
-          gradient: LinearGradient(
+            gradient: LinearGradient(
               colors: [
                 Color.fromARGB(255, 127, 57, 137),
                 Color.fromARGB(255, 151, 98, 158),
               ],
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-          ),
+            ),
           ),
           child: Center(
             child: Column(
@@ -53,13 +53,12 @@ class _MainHomeState extends State<MainHome> {
                               letterSpacing: -0.3,
                             ),
                           ),
-                          Text("$formattedDate",
-                          style:TextStyle(
-                            color: Colors.grey,
-                            fontFamily: "Poppins",
-                            letterSpacing: -0.3,
-
-                          ))
+                          Text(formattedDate,
+                              style: const TextStyle(
+                                color: Colors.grey,
+                                fontFamily: "Poppins",
+                                letterSpacing: -0.3,
+                              ))
                         ],
                       ),
                       IconButton.filled(
@@ -75,29 +74,54 @@ class _MainHomeState extends State<MainHome> {
                     ],
                   ),
                 ),
-                  Material(
-                child: MaterialButton(
-                  onPressed: () {
-                    FirebaseAuth.instance.signOut();
-                  },
-                  color: Color.fromARGB(255, 75, 0, 87),
-                  child: Text(
-                    "Sign out",
-                    style: TextStyle(
-                      color: Colors.white,
+
+                //this will be a search bar..
+//*******************************************************//
+
+                Text("CATEGORY",
+                style: TextStyle(
+                  fontFamily: "Poppins",
+                  fontSize: 14,
+                  color: Color.fromARGB(255, 13, 170, 167),
+                ),
+                ),
+                const SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        TopCards(),
+                        TopCards(),
+                        TopCards(),
+                        TopCards(),
+                      ],
                     ),
                   ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14.0),
+                ),
+                Material(
+                  child: MaterialButton(
+                    onPressed: () {
+                      FirebaseAuth.instance.signOut();
+                    },
+                    color: Color.fromARGB(255, 75, 0, 87),
+                    child: Text(
+                      "Sign out",
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14.0),
+                    ),
                   ),
                 ),
-                  ),
               ],
-              
             ),
           ),
         ),
       ),
     );
   }
-}   
+}
