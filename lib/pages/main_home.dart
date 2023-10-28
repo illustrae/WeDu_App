@@ -19,6 +19,7 @@ class _MainHomeState extends State<MainHome> {
     String formattedDate = DateFormat.MMMEd().format(currentDate);
     return SafeArea(
       child: Scaffold(
+        extendBody: true,
         // backgroundColor: Color.fromARGB(255, 127, 69, 136),
         body: Container(
           decoration: const BoxDecoration(
@@ -62,9 +63,9 @@ class _MainHomeState extends State<MainHome> {
                         ],
                       ),
                       IconButton.filled(
-                        color: Color.fromARGB(255, 243, 237, 230),
+                        color: const Color.fromARGB(255, 243, 237, 230),
                         style: IconButton.styleFrom(
-                            backgroundColor: Color.fromARGB(255, 154, 76, 164)),
+                            backgroundColor: const Color.fromARGB(255, 154, 76, 164)),
                         iconSize: 20,
                         icon: const Icon(Icons.notifications),
                         onPressed: () {
@@ -75,15 +76,24 @@ class _MainHomeState extends State<MainHome> {
                   ),
                 ),
 
-                //this will be a search bar..
-//*******************************************************//
-
-                Text("CATEGORY",
-                style: TextStyle(
-                  fontFamily: "Poppins",
-                  fontSize: 14,
-                  color: Color.fromARGB(255, 13, 170, 167),
+                //Search bar...
+                const Padding(
+                  padding: EdgeInsets.all(20.0),
+                  child: SearchBar(
+                    hintText: "Search...",
+                    leading: Icon(Icons.search_rounded,
+                        color: Color.fromARGB(255, 103, 5, 116), weight: 10.0),
+                  ),
                 ),
+
+                //Category and boxes
+                const Text(
+                  "CATEGORY",
+                  style: TextStyle(
+                    fontFamily: "Poppins",
+                    fontSize: 14,
+                    color: Color.fromARGB(255, 13, 170, 167),
+                  ),
                 ),
                 const SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
@@ -100,23 +110,60 @@ class _MainHomeState extends State<MainHome> {
                     ),
                   ),
                 ),
-                Material(
-                  child: MaterialButton(
-                    onPressed: () {
-                      FirebaseAuth.instance.signOut();
-                    },
-                    color: Color.fromARGB(255, 75, 0, 87),
-                    child: Text(
-                      "Sign out",
-                      style: TextStyle(
-                        color: Colors.white,
-                      ),
+
+                const SizedBox(height: 20),
+
+                //Bottom planners list
+                Expanded(
+                  child: ClipRRect(
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(20.0),
+                      topRight: Radius.circular(20.0),
                     ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14.0),
+                    child: Container(
+                      color: const Color.fromARGB(255, 243, 228, 228),
+                      height: 100,
+                      width: double.infinity,
+                      child: const SingleChildScrollView(
+                        scrollDirection: Axis.vertical,
+                        child: Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Text(
+                                "TOP RATED",
+                                style: TextStyle(
+                                  fontFamily: "Poppins",
+                                  fontSize: 14,
+                                  color: Color.fromARGB(255, 13, 170, 167),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ),
+
+                // Material(
+                //   child: MaterialButton(
+                //     onPressed: () {
+                //       FirebaseAuth.instance.signOut();
+                //     },
+                //     color: Color.fromARGB(255, 75, 0, 87),
+                //     child: Text(
+                //       "Sign out",
+                //       style: TextStyle(
+                //         color: Colors.white,
+                //       ),
+                //     ),
+                //     shape: RoundedRectangleBorder(
+                //       borderRadius: BorderRadius.circular(14.0),
+                //     ),
+                //   ),
+                // ),
               ],
             ),
           ),
