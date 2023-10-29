@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:login_reg/components/errors.dart';
 
 class RegistrationPage extends StatefulWidget {
   final VoidCallback showLoginPage;
@@ -15,37 +17,47 @@ class _RegistrationPageState extends State<RegistrationPage> {
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
 
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
-  }
+  void registerUser() async {
+    showDialog(
+      context: context,
+      builder: (context) => const Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
 
-  Future signUp() async {
-    if (passwordConfirmed()) {
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: _emailController.text.trim(),
-          password: _passwordController.text.trim());
-    }
-  }
-
-  bool passwordConfirmed() {
-    if (_passwordController.text.trim() ==
-        _confirmPasswordController.text.trim()) {
-      return true;
+    if (_passwordController.text != _confirmPasswordController.text) {
+      Navigator.pop(context);
+      displayMessageToUser("Passwords do not match!", context);
     } else {
-      return false;
+      try {
+        UserCredential? userCredential = await FirebaseAuth.instance
+            .createUserWithEmailAndPassword(
+                email: _emailController.text,
+                password: _passwordController.text);
+
+        createUserInfo(userCredential);
+
+        //pop the loading circle
+        Navigator.pop(context);
+      } on FirebaseAuthException catch (e) {
+        Navigator.pop(context);
+
+        displayMessageToUser(e.code, context);
+      }
     }
   }
 
-bool isVisible(){
-  if (passwordConfirmed() == false){
-    return true;
-  } else {
-   return false;
+  Future<void> createUserInfo(UserCredential? userCredential) async {
+    if (userCredential != null && userCredential.user != null) {
+      await FirebaseFirestore.instance
+          .collection("Users")
+          .doc(userCredential.user!.email)
+          .set({
+            'email': userCredential.user!.email,
+            'user_id': userCredential.user!.uid,
+          });
+    }
   }
-}
 
   @override
   Widget build(BuildContext context) {
@@ -154,19 +166,19 @@ bool isVisible(){
                       ),
 
                       const SizedBox(height: 10),
-                    
+
                       Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 25),
-                          child: GestureDetector(
-                            onTap: signUp,
-                            child: Container(
-                              padding: const EdgeInsets.all(16),
-                              decoration: BoxDecoration(
-                                color: const Color.fromARGB(255, 75, 0, 87),
-                                borderRadius: BorderRadius.circular(14),
-                              ),
-                              child: const Center(
-                                  child: Text(
+                        padding: const EdgeInsets.symmetric(horizontal: 25),
+                        child: GestureDetector(
+                          onTap: registerUser,
+                          child: Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: const Color.fromARGB(255, 75, 0, 87),
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                            child: const Center(
+                              child: Text(
                                 "Register",
                                 style: TextStyle(
                                   color: Colors.white,
@@ -174,10 +186,10 @@ bool isVisible(){
                                   fontSize: 14,
                                 ),
                               ),
-                              ),
                             ),
                           ),
-                          ),
+                        ),
+                      ),
                       const SizedBox(height: 15),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,

@@ -77,12 +77,15 @@ class _MainHomeState extends State<MainHome> {
                 ),
 
                 //Search bar...
-                const Padding(
-                  padding: EdgeInsets.all(20.0),
-                  child: SearchBar(
-                    hintText: "Search...",
-                    leading: Icon(Icons.search_rounded,
-                        color: Color.fromARGB(255, 103, 5, 116), weight: 10.0),
+                Container(
+                  height: 60,
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                    child: SearchBar(
+                      hintText: "Search...",
+                      leading: Icon(Icons.search_rounded,
+                          color: Color.fromARGB(255, 103, 5, 116), weight: 10.0),
+                    ),
                   ),
                 ),
 
@@ -147,23 +150,23 @@ class _MainHomeState extends State<MainHome> {
                   ),
                 ),
 
-                // Material(
-                //   child: MaterialButton(
-                //     onPressed: () {
-                //       FirebaseAuth.instance.signOut();
-                //     },
-                //     color: Color.fromARGB(255, 75, 0, 87),
-                //     child: Text(
-                //       "Sign out",
-                //       style: TextStyle(
-                //         color: Colors.white,
-                //       ),
-                //     ),
-                //     shape: RoundedRectangleBorder(
-                //       borderRadius: BorderRadius.circular(14.0),
-                //     ),
-                //   ),
-                // ),
+                Material(
+                  child: MaterialButton(
+                    onPressed: () {
+                      FirebaseAuth.instance.signOut();
+                    },
+                    color: Color.fromARGB(255, 75, 0, 87),
+                    child: Text(
+                      "Sign out",
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14.0),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
