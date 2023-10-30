@@ -46,6 +46,13 @@ class _RegistrationPageState extends State<RegistrationPage> {
       }
     }
   }
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
+  }
 
   Future<void> createUserInfo(UserCredential? userCredential) async {
     if (userCredential != null && userCredential.user != null) {

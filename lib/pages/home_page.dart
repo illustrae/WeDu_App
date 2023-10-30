@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:login_reg/pages/appointments.dart';
 
@@ -8,10 +9,14 @@ import 'package:login_reg/pages/profile_page.dart';
 //This file is initially the bottom Navigation bar that brings in my other screens(pages)
 class HomePage extends StatefulWidget {
   final int initialHomePageIndex;
+ 
+
+ 
   const HomePage({super.key, required this.initialHomePageIndex});
 
   @override
   State<HomePage> createState() => _HomePageState();
+  
 }
 
 class _HomePageState extends State<HomePage> {
@@ -24,10 +29,10 @@ class _HomePageState extends State<HomePage> {
   int _selectedPage = 0;
 
   final pageOptions = [
-    const MainHome(),
-    const ProfilePage(),
-    const Appointments(),
-    const Messages(),
+     MainHome(),
+     ProfilePage(),
+     Appointments(),
+     Messages(),
   ];
 
   void _onItemTapped(int index) {
