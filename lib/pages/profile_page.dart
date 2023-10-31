@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:login_reg/pages/home_page.dart';
+import 'package:login_reg/pages/profile_view.dart';
+
 
 
 class ProfilePage extends StatefulWidget {
@@ -57,8 +58,8 @@ void initState(){
         'service': selectedService,
       });
       
-      Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (context) => const HomePage(initialHomePageIndex: 0)),
+      Navigator.of(context).push(
+      MaterialPageRoute(builder: (context) => const ProfileView()),
       
       );
     }

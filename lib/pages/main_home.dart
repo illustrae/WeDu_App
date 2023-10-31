@@ -149,24 +149,6 @@ class _MainHomeState extends State<MainHome> {
                     ),
                   ),
                 ),
-
-                Material(
-                  child: MaterialButton(
-                    onPressed: () {
-                      FirebaseAuth.instance.signOut();
-                    },
-                    color: Color.fromARGB(255, 75, 0, 87),
-                    child: Text(
-                      "Sign out",
-                      style: TextStyle(
-                        color: Colors.white,
-                      ),
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14.0),
-                    ),
-                  ),
-                ),
               ],
             ),
           ),

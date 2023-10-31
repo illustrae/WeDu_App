@@ -1,25 +1,24 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:login_reg/components/drawer.dart';
 import 'package:login_reg/pages/appointments.dart';
 
 import 'package:login_reg/pages/main_home.dart';
 import 'package:login_reg/pages/messages.dart';
-import 'package:login_reg/pages/profile_page.dart';
+
+import 'package:login_reg/pages/profile_view.dart';
 
 //This file is initially the bottom Navigation bar that brings in my other screens(pages)
 class HomePage extends StatefulWidget {
   final int initialHomePageIndex;
- 
 
- 
   const HomePage({super.key, required this.initialHomePageIndex});
 
   @override
   State<HomePage> createState() => _HomePageState();
-  
 }
 
 class _HomePageState extends State<HomePage> {
+  
   @override
   void initState() {
     super.initState();
@@ -29,10 +28,10 @@ class _HomePageState extends State<HomePage> {
   int _selectedPage = 0;
 
   final pageOptions = [
-     MainHome(),
-     ProfilePage(),
-     Appointments(),
-     Messages(),
+    MainHome(),
+    ProfileView(),
+    Appointments(),
+    Messages(),
   ];
 
   void _onItemTapped(int index) {
@@ -44,6 +43,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBody: true,
+      endDrawer: MyDrawer(),
       appBar: AppBar(
         elevation: 3,
         shadowColor: Colors.black,
@@ -57,12 +57,13 @@ class _HomePageState extends State<HomePage> {
         actions: [
           Row(
             children: [
-              IconButton(
-                icon: const Icon(Icons.settings,
-                    color: Color.fromARGB(255, 103, 5, 116), weight: 10.0),
-                onPressed: () {},
+              Builder(
+                builder: (context) => IconButton(
+                  icon: new Icon(Icons.settings),
+                  onPressed: () => Scaffold.of(context).openEndDrawer(),
+                ),
               ),
-              const SizedBox(width: 20),
+             
             ],
           ),
         ],
