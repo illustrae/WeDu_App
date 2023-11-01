@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:login_reg/components/profile_data.dart';
 import 'package:login_reg/firebase_options.dart';
 import 'package:login_reg/auth/main_page.dart';
+import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,9 +21,14 @@ class LoginRegApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: MainPage(),
+    return MultiProvider(
+      providers: [
+       ChangeNotifierProvider(create: (_) => ProfileData()),
+      ],
+      child: const MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: MainPage(),
+      ),
     );
   }
 }

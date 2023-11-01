@@ -20,34 +20,21 @@ class MyDrawer extends StatelessWidget {
             // ),
           ),
           ListTile(
-            leading: Icon(Icons.person),
-            title: Text('Account Settings'),
-            onTap: () async {
-              await  Dialog.fullscreen(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  const Text('This is a fullscreen dialog.'),
-                  const SizedBox(height: 15),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: const Text('Close'),
-                  ),
-                ],
+              leading: Icon(Icons.person),
+              title: Text('Account Settings'),
+              onTap: () async {
+                await showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return Dialog.fullscreen(
+                      child: const ProfilePage(),
+                    );
+                    
+                  },
+                );
+                Navigator.pop(context);
+              },
               ),
-              );
-              Navigator.pop(context);
-              // Navigator.of(context).pushAndRemoveUntil(
-              //   MaterialPageRoute(
-              //     builder: (context) => const ProfilePage(),
-              //   ),
-              //   ModalRoute.withName('/'),
-              // );
-            },
-          ),
           ListTile(
             leading: Icon(Icons.exit_to_app),
             title: Text('Sign Out'),

@@ -1,88 +1,69 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:login_reg/components/profile_data.dart';
 import 'package:login_reg/pages/profile_view.dart';
-
-
+import 'package:provider/provider.dart';
 
 class ProfilePage extends StatefulWidget {
-
   const ProfilePage({super.key});
-  
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  final user = FirebaseAuth.instance.currentUser;
-  final TextEditingController _userNameController = TextEditingController();
-  final TextEditingController _priceController = TextEditingController();
-  final TextEditingController _bioController = TextEditingController();
-  final TextEditingController _experienceController = TextEditingController();
+  late final ProfileData profileData = Provider.of<ProfileData>(context);
 
-  final List<String> items = [
-    'Planner',
-    'Caterer',
-    'Entertainer',
-    'Photographer',
-    'Transportation',
-    'Venue Space',
-    "Looking for Services.."
-  ];
-
-  String selectedService = 'Planner';
-@override
-void initState(){
-  super.initState();
-  final User? user = FirebaseAuth.instance.currentUser;
-  if (user != null) {
-    print("User ID: ${user.uid}");
-  }else{
-    print("NOOOOOOO ID....");
+  @override
+  void initState() {
+    super.initState();
   }
-}
-
-  CollectionReference profilesCollection = FirebaseFirestore.instance.collection('profiles');
 
   void _saveUserProfile() async {
     final User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
-      await profilesCollection.doc(user.email).set({
+      await profileData.profilesCollection.doc(user.email).set({
         'user_id': user.uid,
         'email': user.email,
-        'username': _userNameController.text,
-        'price': _priceController.text,
-        'bio': _bioController.text,
-        'experience': _experienceController.text,
-        'service': selectedService,
+        'username': profileData.userNameController.text,
+        'price': profileData.priceController.text,
+        'bio': profileData.bioController.text,
+        'experience': profileData.experienceController.text,
+        'service': profileData.selectedService,
       });
-      
+
       Navigator.of(context).push(
-      MaterialPageRoute(builder: (context) => const ProfileView()),
-      
+        MaterialPageRoute(builder: (context) => const ProfileView()),
       );
     }
   }
-  
+
+  bool isEditable = false;
+
+  void editProfile() {
+    setState(() {
+      isEditable = true;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      extendBody: true,
-      body: Container(
-        height: double.maxFinite,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Color.fromARGB(255, 127, 57, 137),
-              Color.fromARGB(255, 151, 98, 158),
-            ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+    return ChangeNotifierProvider(
+      create: (context) => ProfileData(),
+      child: Scaffold(
+        extendBody: true,
+        body: Container(
+          height: double.maxFinite,
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Color.fromARGB(255, 127, 57, 137),
+                Color.fromARGB(255, 151, 98, 158),
+              ],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
           ),
-        ),
-        child: Container(
           child: SingleChildScrollView(
             child: Column(
               children: [
@@ -92,10 +73,10 @@ void initState(){
                     Padding(
                       padding: EdgeInsets.all(20.0),
                       child: CircleAvatar(
-                        radius: 40,
+                        radius: 60,
                         backgroundColor: Color.fromARGB(255, 243, 237, 230),
                         child: Icon(
-                          size: 70,
+                          size: 80,
                           Icons.person,
                         ),
                       ),
@@ -108,19 +89,23 @@ void initState(){
                   child: Container(
                     height: 55,
                     decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 151, 98, 158),
-                      border: Border.all(color: const Color.fromARGB(255, 13, 170, 167)),
+                      color: isEditable
+                          ? const Color.fromARGB(255, 151, 98, 158)
+                          : Colors.grey,
+                      border: Border.all(
+                          color: const Color.fromARGB(255, 13, 170, 167)),
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: Padding(
                       padding: const EdgeInsets.only(left: 20.0),
                       child: TextField(
+                        enabled: isEditable,
                         style: const TextStyle(
                           color: Color.fromARGB(255, 243, 237, 230),
                           fontFamily: "Poppins",
                           fontWeight: FontWeight.w100,
                         ),
-                        controller: _userNameController,
+                        controller: profileData.userNameController,
                         decoration: const InputDecoration(
                           labelText: 'Username',
                           labelStyle: TextStyle(
@@ -138,10 +123,10 @@ void initState(){
                 const SizedBox(height: 10),
                 DropdownButtonHideUnderline(
                   child: DropdownButton<String>(
-                    value: selectedService,
+                    value: profileData.selectedService,
                     onChanged: (String? newValue) {
                       setState(() {
-                        selectedService = newValue!;
+                        profileData.selectedService = newValue!;
                       });
                     },
                     style: const TextStyle(
@@ -153,7 +138,8 @@ void initState(){
                       Icons.arrow_drop_down,
                       color: Color.fromARGB(255, 243, 237, 230),
                     ),
-                    items: items.map<DropdownMenuItem<String>>((String value) {
+                    items: profileData.items
+                        .map<DropdownMenuItem<String>>((String value) {
                       return DropdownMenuItem<String>(
                         value: value,
                         child: Text(
@@ -175,18 +161,20 @@ void initState(){
                     height: 55,
                     decoration: BoxDecoration(
                       color: const Color.fromARGB(255, 151, 98, 158),
-                      border: Border.all(color: const Color.fromARGB(255, 13, 170, 167)),
+                      border: Border.all(
+                          color: const Color.fromARGB(255, 13, 170, 167)),
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: Padding(
                       padding: const EdgeInsets.only(left: 20.0),
                       child: TextField(
+                        enabled: isEditable,
                         style: const TextStyle(
                           color: Color.fromARGB(255, 243, 237, 230),
                           fontFamily: "Poppins",
                           fontWeight: FontWeight.w100,
                         ),
-                        controller: _experienceController,
+                        controller: profileData.experienceController,
                         decoration: const InputDecoration(
                           labelText: 'Experience',
                           labelStyle: TextStyle(
@@ -208,18 +196,20 @@ void initState(){
                     height: 50,
                     decoration: BoxDecoration(
                       color: const Color.fromARGB(255, 151, 98, 158),
-                      border: Border.all(color: const Color.fromARGB(255, 13, 170, 167)),
+                      border: Border.all(
+                          color: const Color.fromARGB(255, 13, 170, 167)),
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: Padding(
                       padding: const EdgeInsets.only(left: 20.0),
                       child: TextField(
+                        enabled: isEditable,
                         style: const TextStyle(
                           color: Color.fromARGB(255, 243, 237, 230),
                           fontFamily: "Poppins",
                           fontWeight: FontWeight.w100,
                         ),
-                        controller: _priceController,
+                        controller: profileData.priceController,
                         decoration: const InputDecoration(
                           labelText: 'Price',
                           labelStyle: TextStyle(
@@ -241,18 +231,20 @@ void initState(){
                   child: Container(
                     decoration: BoxDecoration(
                       color: const Color.fromARGB(255, 151, 98, 158),
-                      border: Border.all(color: const Color.fromARGB(255, 13, 170, 167)),
+                      border: Border.all(
+                          color: const Color.fromARGB(255, 13, 170, 167)),
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: Padding(
                       padding: const EdgeInsets.only(left: 10.0),
                       child: TextField(
+                        enabled: isEditable,
                         style: const TextStyle(
                           color: Color.fromARGB(255, 243, 237, 230),
                           fontFamily: "Poppins",
                           fontWeight: FontWeight.w100,
                         ),
-                        controller: _bioController,
+                        controller: profileData.bioController,
                         decoration: const InputDecoration(
                           labelText: 'Bio',
                           labelStyle: TextStyle(
@@ -267,6 +259,10 @@ void initState(){
                       ),
                     ),
                   ),
+                ),
+                ElevatedButton(
+                  onPressed: editProfile,
+                  child: Text('Edit Profile'),
                 ),
                 ElevatedButton(
                   onPressed: _saveUserProfile,
