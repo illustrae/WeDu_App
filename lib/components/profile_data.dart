@@ -26,8 +26,7 @@ final user = FirebaseAuth.instance.currentUser;
   CollectionReference profilesCollection = FirebaseFirestore.instance.collection('profiles');
 
 
-
- Future<void> fetchUserProfile() async {
+ Future<void> fetchUserProfile(String uid) async {
     try {
       if (user != null) {
         final userId = user?.uid;

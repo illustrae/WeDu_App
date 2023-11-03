@@ -16,10 +16,16 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   late final ProfileData profileData = Provider.of<ProfileData>(context);
 
-  @override
-  void initState() {
-    super.initState();
-  }
+  
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   final user = FirebaseAuth.instance.currentUser;
+  //   if (user != null) {
+  //     final profileData = Provider.of<ProfileData>(context, listen: false);
+  //        profileData.fetchUserProfile(user.uid);
+  // }
+  // }
 
   void _saveUserProfile() async {
     final User? user = FirebaseAuth.instance.currentUser;
@@ -35,10 +41,11 @@ class _ProfilePageState extends State<ProfilePage> {
       });
 
       Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) => const ProfileView()),
+        MaterialPageRoute(builder: (context) => const ProfileView(key: Key('profile_view_key'),)),
       );
     }
   }
+
 
   bool isEditable = false;
   bool showSpinner = false;

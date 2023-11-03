@@ -29,7 +29,7 @@ class _HomePageState extends State<HomePage> {
 
   final pageOptions = [
     MainHome(),
-    ProfileView(),
+    ProfileView(key: Key('profile_view_key')),
     Appointments(),
     Messages(),
   ];
