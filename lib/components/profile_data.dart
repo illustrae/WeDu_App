@@ -25,4 +25,28 @@ final user = FirebaseAuth.instance.currentUser;
 
   CollectionReference profilesCollection = FirebaseFirestore.instance.collection('profiles');
 
+
+
+ Future<void> fetchUserProfile() async {
+    try {
+      if (user != null) {
+        final userId = user?.uid;
+        final profileDoc = await profilesCollection.doc(userId).get();
+
+        if (profileDoc.exists) {
+          final data = profileDoc.data() as Map<String, dynamic>;
+          userNameController.text = data['username'] ?? '';
+          priceController.text = data['price'] ?? '';
+          bioController.text = data['bio'] ?? '';
+          experienceController.text = data['experience'] ?? '';
+          selectedService = data['service'] ?? 'Planner';
+        }
+      }
+    } catch (e) {
+      print('Error fetching user profile: $e');
+    }
+    notifyListeners(); // Notify listeners of the changes
+  }
+
+
 }

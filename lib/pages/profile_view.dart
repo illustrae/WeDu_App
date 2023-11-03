@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../components/profile_data.dart';
+
+
 
 class ProfileView extends StatefulWidget {
   const ProfileView({super.key});
@@ -7,71 +11,34 @@ class ProfileView extends StatefulWidget {
   State<ProfileView> createState() => _ProfileViewState();
 }
 
+
+
 class _ProfileViewState extends State<ProfileView> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    final profileData = Provider.of<ProfileData>(context);
 
+    return Scaffold(
       extendBody: true,
-      body: Container(
-        height: double.maxFinite,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Color.fromARGB(255, 127, 57, 137),
-              Color.fromARGB(255, 151, 98, 158),
-            ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
-        child: Container(
-          child: const SingleChildScrollView(
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.all(20.0),
-                      child: CircleAvatar(
-                        radius: 40,
-                        backgroundColor: Color.fromARGB(255, 243, 237, 230),
-                        child: Icon(
-                          size: 70,
-                          Icons.person,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 10),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 25),
-                ),
-                SizedBox(height: 10),
-                  
-                SizedBox(height: 10),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 25),
-                 
-                ),
-                SizedBox(height: 10),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 25),
-                  
-                ),
-                SizedBox(height: 10),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 25),
-                ),
-             
-              ],
-            ),
-          ),
-        ),
+      body: Consumer<ProfileData>(
+        builder: (BuildContext context, profileData, Widget? child) {
+          if (profileData.user == null) {
+            // You might want to show a loading indicator here while data is loading.
+            return CircularProgressIndicator();
+          } else {
+            return ListView(
+              itemCount: 1, // Since you're showing one user's profile
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text('Username: ${profileData.userNameController.text}'),
+                  subtitle: Text('Bio: ${profileData.bioController.text}'),
+                  // Add more fields as needed
+                );
+              },
+            );
+          }
+        },
       ),
     );
-
   }
 }
