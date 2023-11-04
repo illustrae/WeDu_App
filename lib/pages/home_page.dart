@@ -40,6 +40,7 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       extendBody: true,
@@ -79,6 +80,7 @@ class _HomePageState extends State<HomePage> {
           topRight: Radius.circular(20.0),
         ),
         child: BottomNavigationBar(
+          
           type: BottomNavigationBarType.fixed,
           backgroundColor: const Color.fromARGB(255, 154, 76, 164),
           selectedFontSize: 0,

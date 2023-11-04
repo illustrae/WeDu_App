@@ -1,7 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:login_reg/components/profile_data.dart';
 import 'package:login_reg/components/topcards.dart';
+import 'package:provider/provider.dart';
 
 class MainHome extends StatefulWidget {
   const MainHome({super.key});
@@ -13,12 +15,24 @@ class MainHome extends StatefulWidget {
 class _MainHomeState extends State<MainHome> {
   final user = FirebaseAuth.instance.currentUser;
   final currentDate = DateTime.now();
+  @override
+  void initState() {
+    super.initState();
+    // Fetch the user's own profile data when the page is loaded
+    late final profileData = Provider.of<ProfileData>(context, listen: false);
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user != null) {
+      profileData.fetchUserProfile(user.uid);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     String formattedDate = DateFormat.MMMEd().format(currentDate);
-    return SafeArea(
-      child: Scaffold(
+    return Consumer<ProfileData>(
+        builder: (BuildContext context, profileData, Widget? child) {
+      return Scaffold(
         extendBody: true,
         // backgroundColor: Color.fromARGB(255, 127, 69, 136),
         body: Container(
@@ -44,9 +58,9 @@ class _MainHomeState extends State<MainHome> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
-                            "Welcome Back, Trae! ",
-                            style: TextStyle(
+                          Text(
+                            "Welcome Back, ${profileData.userNameController.text} ",
+                            style: const TextStyle(
                               color: Color.fromARGB(255, 243, 237, 230),
                               fontFamily: "Poppins",
                               fontSize: 16,
@@ -65,7 +79,8 @@ class _MainHomeState extends State<MainHome> {
                       IconButton.filled(
                         color: const Color.fromARGB(255, 243, 237, 230),
                         style: IconButton.styleFrom(
-                            backgroundColor: const Color.fromARGB(255, 154, 76, 164)),
+                            backgroundColor:
+                                const Color.fromARGB(255, 154, 76, 164)),
                         iconSize: 20,
                         icon: const Icon(Icons.notifications),
                         onPressed: () {
@@ -80,11 +95,13 @@ class _MainHomeState extends State<MainHome> {
                 Container(
                   height: 60,
                   child: const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
                     child: SearchBar(
                       hintText: "Search...",
                       leading: Icon(Icons.search_rounded,
-                          color: Color.fromARGB(255, 103, 5, 116), weight: 10.0),
+                          color: Color.fromARGB(255, 103, 5, 116),
+                          weight: 10.0),
                     ),
                   ),
                 ),
@@ -153,7 +170,7 @@ class _MainHomeState extends State<MainHome> {
             ),
           ),
         ),
-      ),
-    );
+      );
+    });
   }
 }

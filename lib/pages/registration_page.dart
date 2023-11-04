@@ -38,6 +38,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 password: _passwordController.text);
 
         createUserInfo(userCredential);
+        
 
         //pop the loading circle
         Navigator.pop(context);

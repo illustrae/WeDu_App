@@ -13,7 +13,7 @@ class MyDrawer extends StatefulWidget {
 }
 
 class _MyDrawerState extends State<MyDrawer> {
-  late final ProfileData profileData = Provider.of<ProfileData>(context);
+  final user = FirebaseAuth.instance.currentUser;
 
 bool showSpinner = false;
 
@@ -28,7 +28,8 @@ void toggleSpinner() {
   Widget build(BuildContext context) {
     return Consumer<ProfileData>(
       builder: (BuildContext context, profileData, Widget? child) {  
-      child: ModalProgressHUD(
+        ProfileData profileData = Provider.of<ProfileData>(context);
+      return ModalProgressHUD(
         inAsyncCall: showSpinner,
         child: Drawer(
           backgroundColor: Color.fromARGB(255, 243, 228, 228),
@@ -39,8 +40,8 @@ void toggleSpinner() {
                 decoration: BoxDecoration(
                   color: Color.fromARGB(255, 127, 57, 137),
                 ),
-                accountName: Text('${profileData.userNameController.text}'),
-                accountEmail: Text('Account name'),
+                accountName: Text( profileData.userNameController.text.isNotEmpty ? '${profileData.userNameController.text}' : 'New User'),
+                accountEmail: Text('${user?.email}'),
                 // currentAccountPicture: CircleAvatar(
                 //   backgroundImage: null,
                 // ),

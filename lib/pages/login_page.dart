@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:login_reg/components/profile_data.dart';
 import 'package:login_reg/pages/password_reset.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
   final VoidCallback showRegistrationPage;
@@ -15,9 +17,20 @@ class _LoginPageState extends State<LoginPage> {
   final _passwordController = TextEditingController();
   Future signIn() async {
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
+      final userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: _emailController.text.trim(),
           password: _passwordController.text.trim());
+        
+        final user = userCredential.user;
+
+    if (user != null) {
+
+      final profileData = Provider.of<ProfileData>(context, listen: false);
+      profileData.fetchUserProfile(user.uid);
+
+      // Add a print statement to see the profile data
+      print('Profile Data: ${profileData.userNameController.text}, ${profileData.priceController.text}, ${profileData.bioController.text}, ${profileData.experienceController.text}, ${profileData.selectedService}');
+    }
     } on FirebaseAuthException catch (e) {
       // ignore: use_build_context_synchronously
       showDialog(

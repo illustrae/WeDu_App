@@ -2,16 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+class ProfileData extends ChangeNotifier {
+  final user = FirebaseAuth.instance.currentUser;
+  final TextEditingController userNameController = TextEditingController();
+  final TextEditingController priceController = TextEditingController();
+  final TextEditingController bioController = TextEditingController();
+  final TextEditingController experienceController = TextEditingController();
 
-
-class ProfileData extends ChangeNotifier{
-final user = FirebaseAuth.instance.currentUser;
-   final TextEditingController userNameController = TextEditingController();
-   final TextEditingController priceController = TextEditingController();
-   final TextEditingController bioController = TextEditingController();
-   final TextEditingController experienceController = TextEditingController();
-
-   List<String> items = [
+  List<String> items = [
     'Planner',
     'Caterer',
     'Entertainer',
@@ -23,29 +21,37 @@ final user = FirebaseAuth.instance.currentUser;
 
   String selectedService = 'Planner';
 
-  CollectionReference profilesCollection = FirebaseFirestore.instance.collection('profiles');
+  CollectionReference profilesCollection =
+      FirebaseFirestore.instance.collection('profiles');
 
-
- Future<void> fetchUserProfile(String uid) async {
+  Future<void> fetchUserProfile(String uid) async {
     try {
-      if (user != null) {
-        final userId = user?.uid;
-        final profileDoc = await profilesCollection.doc(userId).get();
+      final CollectionReference profiles =
+          FirebaseFirestore.instance.collection('profiles');
 
-        if (profileDoc.exists) {
-          final data = profileDoc.data() as Map<String, dynamic>;
-          userNameController.text = data['username'] ?? '';
-          priceController.text = data['price'] ?? '';
-          bioController.text = data['bio'] ?? '';
-          experienceController.text = data['experience'] ?? '';
-          selectedService = data['service'] ?? 'Planner';
-        }
+      QuerySnapshot querySnapshot =
+          await profiles.where('user_id', isEqualTo: uid).get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        final data = querySnapshot.docs.first.data() as Map<String, dynamic>;
+
+        // Set your text controllers or variables with the retrieved data
+        userNameController.text = data['username'] ?? '';
+        priceController.text = data['price'] ?? '';
+        bioController.text = data['bio'] ?? '';
+        experienceController.text = data['experience'] ?? '';
+        selectedService = data['service'] ?? 'Planner';
+      } else {
+        userNameController.text = '';
+        priceController.text = '';
+        bioController.text = '';
+        experienceController.text = '';
+        selectedService = 'Planner';
+
       }
+      notifyListeners();
     } catch (e) {
       print('Error fetching user profile: $e');
     }
-    notifyListeners(); // Notify listeners of the changes
   }
-
-
 }
