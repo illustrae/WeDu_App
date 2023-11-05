@@ -19,8 +19,9 @@ class _ProfileViewState extends State<ProfileView> {
       body: Consumer<ProfileData>(
         builder: (context, profileData, child) {
           return SingleChildScrollView(
+            physics: const ClampingScrollPhysics(),
             child: Container(
-            height:double.maxFinite,
+              height: 1200,
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
@@ -35,19 +36,22 @@ class _ProfileViewState extends State<ProfileView> {
                 children: [
                   Container(
                     margin: EdgeInsets.only(top: 25.0),
-                    child: const Row(
+                    child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Padding(
                           padding: EdgeInsets.all(20.0),
                           child: CircleAvatar(
                             radius: 60,
-                            backgroundColor:
-                                Color.fromARGB(255, 243, 237, 230),
-                            child: Icon(
-                              size: 80,
-                              Icons.person,
-                            ),
+                            backgroundColor: Color.fromARGB(255, 243, 237, 230),
+                            child: profileData
+                                    .profileImageUrlController.text.isNotEmpty
+                                ? Image.network(
+                                    profileData.profileImageUrlController.text)
+                                : Icon(
+                                    size: 80,
+                                    Icons.person,
+                                  ),
                           ),
                         ),
                       ],
@@ -156,23 +160,28 @@ class _ProfileViewState extends State<ProfileView> {
                       ),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 42.0),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            profileData.bioController.text,
-                            style: const TextStyle(
-                              color: Color.fromARGB(255, 243, 237, 230),
-                              fontFamily: "Poppins",
-                              fontWeight: FontWeight.w100,
+                  ConstrainedBox(
+                    constraints: BoxConstraints(maxHeight: double.infinity),
+                    child: IntrinsicHeight(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 42.0),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                profileData.bioController.text,
+                                style: const TextStyle(
+                                  color: Color.fromARGB(255, 243, 237, 230),
+                                  fontFamily: "Poppins",
+                                  fontWeight: FontWeight.w100,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 20,
+                              ),
                             ),
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 20,
-                          ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
                   ),
                 ],

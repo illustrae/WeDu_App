@@ -8,6 +8,7 @@ class ProfileData extends ChangeNotifier {
   final TextEditingController priceController = TextEditingController();
   final TextEditingController bioController = TextEditingController();
   final TextEditingController experienceController = TextEditingController();
+  final TextEditingController profileImageUrlController = TextEditingController();
 
   List<String> items = [
     'Planner',
@@ -41,12 +42,14 @@ class ProfileData extends ChangeNotifier {
         bioController.text = data['bio'] ?? '';
         experienceController.text = data['experience'] ?? '';
         selectedService = data['service'] ?? 'Planner';
+        profileImageUrlController.text = data['profileImageUrl'] ?? '';
       } else {
         userNameController.text = '';
         priceController.text = '';
         bioController.text = '';
         experienceController.text = '';
         selectedService = 'Planner';
+        profileImageUrlController.text = '';
 
       }
       notifyListeners();
