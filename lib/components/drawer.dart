@@ -40,6 +40,7 @@ void toggleSpinner() {
                 decoration: BoxDecoration(
                   color: Color.fromARGB(255, 127, 57, 137),
                 ),
+                currentAccountPicture: CircleAvatar( radius: 40, child: ClipOval(child: Image.network(profileData.profileImageUrlController.text))),
                 accountName: Text( profileData.userNameController.text.isNotEmpty ? '${profileData.userNameController.text}' : 'New User'),
                 accountEmail: Text('${user?.email}'),
                 // currentAccountPicture: CircleAvatar(
@@ -52,11 +53,12 @@ void toggleSpinner() {
                   style:TextStyle( color: Color.fromARGB(255, 13, 170, 167)),),
                   onTap: () async {
                     toggleSpinner();
+                    
                     await showDialog(
                       context: context,
                       builder: (BuildContext context) {
                         return Dialog.fullscreen(
-                          child: const ProfilePage(),
+                          child: ProfilePage(),
                         );
                         
                       },

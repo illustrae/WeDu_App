@@ -8,7 +8,9 @@ import 'package:provider/provider.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
+  
+   ProfilePage({super.key, });
+  
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
@@ -16,12 +18,13 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   late final ProfileData profileData = Provider.of<ProfileData>(context);
-  final ImageUploads imageUploads = ImageUploads(); 
+
+   
 
   void _saveUserProfile() async {
     final User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
-      await profileData.profilesCollection.doc(user.email).update({
+      await profileData.profilesCollection.doc(user.email).set({
         'user_id': user.uid,
         'email': user.email,
         'username': profileData.userNameController.text,
@@ -40,6 +43,8 @@ class _ProfilePageState extends State<ProfilePage> {
       );
     }
   }
+
+
 
   bool isEditable = false;
   bool showSpinner = false;
@@ -104,7 +109,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           children: [
                             Padding(
                               padding: EdgeInsets.all(20.0),
-                              child: imageUploads,
+                              child: ImageUploads(profileData: profileData, context: context),
                               // child: CircleAvatar(
                               //   radius: 60,
                               //   backgroundColor:
@@ -265,7 +270,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                     toggleSpinner();
                                     setState(() {
                                       showSpinner = false;
-                                      print(profileData);
+                                      print(profileData.profileImageUrlController);
                                     });
                                   }
                                   _saveUserProfile();

@@ -9,13 +9,17 @@ import 'package:provider/provider.dart';
 import '../components/profile_data.dart';
 
 class ImageUploads extends StatefulWidget {
-  ImageUploads({Key? key}) : super(key: key);
+  final ProfileData profileData;
+  const ImageUploads(
+      {Key? key, required BuildContext context, required this.profileData})
+      : super(key: key);
 
   @override
-  _ImageUploadsState createState() => _ImageUploadsState();
+  ImageUploadsState createState() => ImageUploadsState();
 }
 
-class _ImageUploadsState extends State<ImageUploads> {
+class ImageUploadsState extends State<ImageUploads> {
+  String? uploadedImageURL;
   firebase_storage.FirebaseStorage storage =
       firebase_storage.FirebaseStorage.instance;
   final FirebaseAuth userCredential = FirebaseAuth.instance;
@@ -24,7 +28,8 @@ class _ImageUploadsState extends State<ImageUploads> {
   final ImagePicker _picker = ImagePicker();
 
   Future imgFromGallery() async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.gallery, imageQuality: 25);
+    final pickedFile =
+        await _picker.pickImage(source: ImageSource.gallery, imageQuality: 25);
 
     setState(() {
       if (pickedFile != null) {
@@ -37,7 +42,8 @@ class _ImageUploadsState extends State<ImageUploads> {
   }
 
   Future imgFromCamera() async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.camera, imageQuality: 25);
+    final pickedFile =
+        await _picker.pickImage(source: ImageSource.camera, imageQuality: 25);
 
     setState(() {
       if (pickedFile != null) {
@@ -66,8 +72,7 @@ class _ImageUploadsState extends State<ImageUploads> {
       final ref = storage.ref(destination);
       await ref.putFile(_photo!);
       final downloadURL = await ref.getDownloadURL();
-
-      // Update the user's profile with the image URL.
+      downloadURL.toString().trim();
       _updateUserProfile(downloadURL);
     } catch (e) {
       print('Error occurred: $e');
@@ -80,7 +85,7 @@ class _ImageUploadsState extends State<ImageUploads> {
       print('User not authenticated.');
       return;
     }
-    
+
     final userUid = user.uid;
 
     final userRef = FirebaseFirestore.instance.collection('profiles');
@@ -89,12 +94,13 @@ class _ImageUploadsState extends State<ImageUploads> {
     query.get().then((QuerySnapshot querySnapshot) {
       if (querySnapshot.docs.isNotEmpty) {
         final DocumentSnapshot doc = querySnapshot.docs.first;
-         final docId = doc.id;
+        final docId = doc.id;
 
         userRef.doc(docId).update({
           'profileImageUrl': downloadURL,
         }).then((_) {
           print('User profile updated with image URL');
+          widget.profileData.setProfileImageUrl(downloadURL);
         }).catchError((error) {
           print('Error updating user profile: $error');
         });
@@ -104,53 +110,53 @@ class _ImageUploadsState extends State<ImageUploads> {
     }).catchError((error) {
       print('Error searching for user: $error');
     });
-
   }
-    @override
-    Widget build(BuildContext context) {
-      final ProfileData profileData = Provider.of<ProfileData>(context);
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<ProfileData>(
+        builder: (BuildContext context, profileData, Widget? child) {
       return GestureDetector(
-          onTap: imgFromGallery, // Call imgFromGallery when tapped
+          onTap: imgFromGallery,
           child: CircleAvatar(
-            radius: 55,
-            backgroundColor: Color(0xffFDCF09),
-            child: profileData.profileImageUrlController.text.isNotEmpty
-              ? Image.network(profileData.profileImageUrlController.text):
-               Icon(
-              Icons.camera_alt,
-              color: Colors.grey[800],
-            ),
-          ));
-    }
-
-    void _showPicker(context) {
-      showModalBottomSheet(
-          context: context,
-          builder: (BuildContext bc) {
-            return SafeArea(
-              child: Container(
-                child: new Wrap(
-                  children: <Widget>[
-                    new ListTile(
-                        leading: new Icon(Icons.photo_library),
-                        title: new Text('Gallery'),
-                        onTap: () {
-                          imgFromGallery();
-                          Navigator.of(context).pop();
-                        }),
-                    new ListTile(
-                      leading: new Icon(Icons.photo_camera),
-                      title: new Text('Camera'),
-                      onTap: () {
-                        imgFromCamera();
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            );
-          });
-    }
+              radius: 55,
+              backgroundColor: Color.fromARGB(255, 212, 209, 196),
+              child: profileData.profileImageUrlController.text.isNotEmpty
+                  ? Icon(
+                      Icons.camera_alt,
+                      color: Colors.grey[800],
+                    )
+                  : Image.network(profileData.profileImageUrlController.text)));
+    });
   }
 
+  void _showPicker(context) {
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext bc) {
+          return SafeArea(
+            child: Container(
+              child: Wrap(
+                children: <Widget>[
+                  ListTile(
+                      leading: const Icon(Icons.photo_library),
+                      title: const Text('Gallery'),
+                      onTap: () {
+                        imgFromGallery();
+                        Navigator.of(context).pop();
+                      }),
+                  ListTile(
+                    leading: const Icon(Icons.photo_camera),
+                    title: const Text('Camera'),
+                    onTap: () {
+                      imgFromCamera();
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
+  }
+}

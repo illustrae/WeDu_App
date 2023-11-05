@@ -10,6 +10,8 @@ class ProfileData extends ChangeNotifier {
   final TextEditingController experienceController = TextEditingController();
   final TextEditingController profileImageUrlController = TextEditingController();
 
+ 
+
   List<String> items = [
     'Planner',
     'Caterer',
@@ -57,4 +59,10 @@ class ProfileData extends ChangeNotifier {
       print('Error fetching user profile: $e');
     }
   }
+ void setProfileImageUrl(String imageUrl) {
+    profileImageUrlController.text = imageUrl;
+    // Notify listeners if necessary
+    notifyListeners();
+ }
+
 }

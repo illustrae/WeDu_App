@@ -46,8 +46,10 @@ class _ProfileViewState extends State<ProfileView> {
                             backgroundColor: Color.fromARGB(255, 243, 237, 230),
                             child: profileData
                                     .profileImageUrlController.text.isNotEmpty
-                                ? Image.network(
-                                    profileData.profileImageUrlController.text)
+                                ? ClipOval(
+                                  child: Image.network(
+                                      profileData.profileImageUrlController.text),
+                                )
                                 : Icon(
                                     size: 80,
                                     Icons.person,
