@@ -118,15 +118,10 @@ class ImageUploadsState extends State<ImageUploads> {
         builder: (BuildContext context, profileData, Widget? child) {
       return GestureDetector(
           onTap: imgFromGallery,
-          child: CircleAvatar(
-              radius: 55,
-              backgroundColor: Color.fromARGB(255, 212, 209, 196),
-              child: profileData.profileImageUrlController.text.isNotEmpty
-                  ? Icon(
-                      Icons.camera_alt,
-                      color: Colors.grey[800],
-                    )
-                  : Image.network(profileData.profileImageUrlController.text)));
+          child: Text(
+            "Change Profile Photo",
+            
+          ));
     });
   }
 

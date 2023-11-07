@@ -25,7 +25,8 @@ class LoginRegApp extends StatelessWidget {
       providers: [
        ChangeNotifierProvider(create: (_) => ProfileData()),
       ],
-      child: const MaterialApp(
+      child:  MaterialApp(
+        theme: ThemeData(scaffoldBackgroundColor: const Color.fromARGB(255, 127, 57, 137) ),
         debugShowCheckedModeBanner: false,
         home: MainPage(),
       ),

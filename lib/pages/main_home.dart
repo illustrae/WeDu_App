@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -26,6 +27,20 @@ class _MainHomeState extends State<MainHome> {
       profileData.fetchUserProfile(user.uid);
     }
   }
+
+  // Future<List<DocumentSnapshot>> getAllUsers(String allUsers) async {
+  //   List<DocumentSnapshot> allUsers = [];
+
+  //   try {
+  //     QuerySnapshot querySnapshot =
+  //         await FirebaseFirestore.instance.collection('profiles').get();
+  //     allUsers = querySnapshot.docs;
+  //   } catch (e) {
+  //     print('Error getting documents: $e');
+  //   }
+
+  //   return allUsers;
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -132,9 +147,18 @@ class _MainHomeState extends State<MainHome> {
                 ),
 
                 const SizedBox(height: 20),
+                Text(
+                  "TOP RATED",
+                  style: TextStyle(
+                    fontFamily: "Poppins",
+                    fontSize: 14,
+                    color: Color.fromARGB(255, 13, 170, 167),
+                  ),
+                ),
 
                 //Bottom planners list
                 Expanded(
+                  flex: 1,
                   child: ClipRRect(
                     borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(20.0),
@@ -142,25 +166,55 @@ class _MainHomeState extends State<MainHome> {
                     ),
                     child: Container(
                       color: const Color.fromARGB(255, 243, 228, 228),
-                      height: 100,
                       width: double.infinity,
-                      child: const SingleChildScrollView(
+                      child: SingleChildScrollView(
                         scrollDirection: Axis.vertical,
-                        child: Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Text(
-                                "TOP RATED",
-                                style: TextStyle(
-                                  fontFamily: "Poppins",
-                                  fontSize: 14,
-                                  color: Color.fromARGB(255, 13, 170, 167),
-                                ),
-                              ),
-                            ],
-                          ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            StreamBuilder<QuerySnapshot>(
+                              stream: FirebaseFirestore.instance
+                                  .collection('profiles')
+                                  .snapshots(),
+                              builder: (context, snapshot) {
+                                if (!snapshot.hasData) {
+                                  return CircularProgressIndicator();
+                                }
+
+                                final documents = snapshot.data!.docs;
+
+                                return ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: NeverScrollableScrollPhysics(),
+                                  itemCount: documents.length,
+                                  itemBuilder: (context, index) {
+                                    final document = documents[index];
+                                    final data =
+                                        document.data() as Map<String, dynamic>;
+
+                                    return ListTile(
+                                      leading: ClipOval(
+                                          child: Image.network(
+                                              data['profileImageUrl'],  fit: BoxFit.fill, width:50, height:50)),
+                                      title: Text(
+                                        data['username'],
+                                        style: TextStyle(
+                                            fontFamily: 'Poppins',
+                                            fontSize: 18,
+                                            color: Color.fromARGB(
+                                                255, 13, 170, 167)),
+                                      ),
+                                      subtitle: Text(data['service']),
+                                      trailing: ElevatedButton(
+                                        onPressed: () {},
+                                        child: Text('Visit'),
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                            ),
+                          ],
                         ),
                       ),
                     ),

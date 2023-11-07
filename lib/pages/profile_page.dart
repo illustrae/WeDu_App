@@ -17,6 +17,7 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  final user = FirebaseAuth.instance.currentUser;
   late final ProfileData profileData = Provider.of<ProfileData>(context);
 
    
@@ -104,24 +105,24 @@ class _ProfilePageState extends State<ProfilePage> {
                     height: 800,
                     child: Column(
                       children: [
-                         Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.all(20.0),
-                              child: ImageUploads(profileData: profileData, context: context),
-                              // child: CircleAvatar(
-                              //   radius: 60,
-                              //   backgroundColor:
-                              //       Color.fromARGB(255, 243, 237, 230),
-                              //   child: Icon(
-                              //     size: 80,
-                              //     Icons.person,
-                              //   ),
-                              // ),
-                            ),
-                          ],
-                        ),
+                         Padding(
+                           padding: EdgeInsets.all(20.0),
+                            child: CircleAvatar(
+                         radius: 60,
+                         backgroundColor: Color.fromARGB(255, 243, 237, 230),
+                         child: profileData
+                                 .profileImageUrlController.text.isNotEmpty
+                             ? ClipOval(
+                               child: Image.network(
+                                   profileData.profileImageUrlController.text),
+                             )
+                             : Icon(
+                                 size: 80,
+                                 Icons.person,
+                               ),
+                                                   ),
+                         ),
+                         ImageUploads(profileData: profileData, context: context),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 25),
                           child: Theme(
