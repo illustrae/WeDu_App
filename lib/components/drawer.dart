@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:login_reg/components/profile_data.dart';
@@ -26,6 +28,7 @@ class _MyDrawerState extends State<MyDrawer> {
     return Consumer<ProfileData>(
       builder: (BuildContext context, profileData, Widget? child) {
         ProfileData profileData = Provider.of<ProfileData>(context);
+        print(profileData);
         return ModalProgressHUD(
           inAsyncCall: showSpinner,
           child: Drawer(
@@ -38,19 +41,25 @@ class _MyDrawerState extends State<MyDrawer> {
                     color: Color.fromARGB(255, 127, 57, 137),
                   ),
                   currentAccountPicture: CircleAvatar(
-                      radius: 40,
-                      child: ClipOval(
-                          child: Image.network(
+                    radius: 40,
+                    child: ClipOval(
+                      child: profileData.profileImageUrlController.text.isEmpty
+                          ? Icon(Icons.person,
+                              size:
+                                  50) // Show an icon if the profile image URL is empty
+                          : Image.network(
                               profileData.profileImageUrlController.text,
                               fit: BoxFit.fill,
                               width: 200,
-                              height: 200))),
+                              height: 200,
+                            ),
+                    ),
+                  ),
                   accountName: Text(
                       profileData.userNameController.text.isNotEmpty
                           ? '${profileData.userNameController.text}'
                           : 'New User'),
                   accountEmail: Text('${user?.email}'),
-              
                 ),
                 ListTile(
                   leading: Icon(Icons.person),

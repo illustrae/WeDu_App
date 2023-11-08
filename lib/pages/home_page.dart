@@ -34,7 +34,7 @@ class _HomePageState extends State<HomePage> {
 
   final pageOptions = [
     MainHome(),
-    ProfileView(key: Key('profile_view_key')),
+    ProfileView(key: const Key('profile_view_key')),
     Appointments(),
     Messages(),
   ];
@@ -67,7 +67,7 @@ class _HomePageState extends State<HomePage> {
               children: [
                 Builder(
                   builder: (context) => IconButton(
-                    icon: new Icon(Icons.settings),
+                    icon:  Icon(Icons.settings),
                     onPressed: () => Scaffold.of(context).openEndDrawer(),
                   ),
                 ),

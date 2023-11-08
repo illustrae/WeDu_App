@@ -43,10 +43,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
         //pop the loading circle
         Navigator.pop(context);
       } on FirebaseAuthException catch (e) {
-        // ignore: use_build_context_synchronously
+       
         Navigator.pop(context);
-
-        // ignore: use_build_context_synchronously
         displayMessageToUser(e.code, context);
       }
     }

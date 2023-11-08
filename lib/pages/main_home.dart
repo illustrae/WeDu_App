@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:login_reg/components/profile_data.dart';
 import 'package:login_reg/components/topcards.dart';
+import 'package:login_reg/pages/profiles_of_others.dart';
 import 'package:provider/provider.dart';
 
 class MainHome extends StatefulWidget {
@@ -27,20 +28,6 @@ class _MainHomeState extends State<MainHome> {
       profileData.fetchUserProfile(user.uid);
     }
   }
-
-  // Future<List<DocumentSnapshot>> getAllUsers(String allUsers) async {
-  //   List<DocumentSnapshot> allUsers = [];
-
-  //   try {
-  //     QuerySnapshot querySnapshot =
-  //         await FirebaseFirestore.instance.collection('profiles').get();
-  //     allUsers = querySnapshot.docs;
-  //   } catch (e) {
-  //     print('Error getting documents: $e');
-  //   }
-
-  //   return allUsers;
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -69,12 +56,11 @@ class _MainHomeState extends State<MainHome> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      // text name ${user!.email}
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Welcome Back, ${profileData.userNameController.text} ",
+                            "Hello ${profileData.userNameController.text}! ",
                             style: const TextStyle(
                               color: Color.fromARGB(255, 243, 237, 230),
                               fontFamily: "Poppins",
@@ -137,22 +123,25 @@ class _MainHomeState extends State<MainHome> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        TopCards(),
-                        TopCards(),
-                        TopCards(),
-                        TopCards(),
+                        TopCards(text: 'Entertainers', icon:Icon(Icons.music_note_rounded, color: Colors.black, size:30)),
+                        TopCards(text: 'Venues',icon:Icon(Icons.church_rounded, color: Colors.black, size:30)),
+                        TopCards(text: 'Photographers',icon:Icon(Icons.camera_enhance, color: Colors.black, size:30)),
+                        TopCards(text: 'Catering', icon:Icon(Icons.food_bank, color: Colors.black, size:30)),
                       ],
                     ),
                   ),
                 ),
 
                 const SizedBox(height: 20),
-                Text(
-                  "TOP RATED",
-                  style: TextStyle(
-                    fontFamily: "Poppins",
-                    fontSize: 14,
-                    color: Color.fromARGB(255, 13, 170, 167),
+                const Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Text(
+                    "Specialist",
+                    style: TextStyle(
+                      fontFamily: "Poppins",
+                      fontSize: 18,
+                      color: Color.fromARGB(255, 13, 170, 167),
+                    ),
                   ),
                 ),
 
@@ -178,27 +167,42 @@ class _MainHomeState extends State<MainHome> {
                                   .snapshots(),
                               builder: (context, snapshot) {
                                 if (!snapshot.hasData) {
-                                  return CircularProgressIndicator();
+                                  return const CircularProgressIndicator();
                                 }
 
                                 final documents = snapshot.data!.docs;
+                                final currentUserUid =
+                                    FirebaseAuth.instance.currentUser?.uid;
 
                                 return ListView.builder(
                                   shrinkWrap: true,
-                                  physics: NeverScrollableScrollPhysics(),
+                                  physics: const NeverScrollableScrollPhysics(),
                                   itemCount: documents.length,
                                   itemBuilder: (context, index) {
                                     final document = documents[index];
                                     final data =
                                         document.data() as Map<String, dynamic>;
-
+                                    final profileUid = data['user_id'];
+                                    if (currentUserUid == profileUid) {
+                                      return const SizedBox.shrink();
+                                    }
                                     return ListTile(
-                                      leading: ClipOval(
-                                          child: Image.network(
-                                              data['profileImageUrl'],  fit: BoxFit.fill, width:50, height:50)),
+                                      leading: data['profileImageUrl'] != ""
+                                          ? ClipOval(
+                                              child: Image.network(
+                                                data['profileImageUrl'],
+                                                fit: BoxFit.fill,
+                                                width: 50,
+                                                height: 50,
+                                              ),
+                                            )
+                                          : const Icon(
+                                              Icons.person,
+                                              size: 50,
+                                            ),
                                       title: Text(
                                         data['username'],
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                             fontFamily: 'Poppins',
                                             fontSize: 18,
                                             color: Color.fromARGB(
@@ -206,8 +210,18 @@ class _MainHomeState extends State<MainHome> {
                                       ),
                                       subtitle: Text(data['service']),
                                       trailing: ElevatedButton(
-                                        onPressed: () {},
-                                        child: Text('Visit'),
+                                        onPressed: () {
+                                          Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  ProfilesOfOthers(
+                                                      userData: data),
+                                            ),
+                                          );
+                                        },
+                                        style : ButtonStyle(backgroundColor: MaterialStatePropertyAll(Color.fromARGB(
+                                                255, 13, 170, 167),),),
+                                        child: Text(style:TextStyle(color: Colors.black),'Visit'),
                                       ),
                                     );
                                   },

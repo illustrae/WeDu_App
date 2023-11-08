@@ -1,16 +1,15 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:login_reg/components/profile_data.dart';
-import 'package:login_reg/pages/profile_view.dart';
 import 'package:login_reg/storage/imageupload.dart';
 import 'package:login_reg/themes/profile_theme.dart';
 import 'package:provider/provider.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 class ProfilePage extends StatefulWidget {
-  
-   ProfilePage({super.key, });
-  
+  ProfilePage({
+    super.key,
+  });
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
@@ -19,8 +18,6 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   final user = FirebaseAuth.instance.currentUser;
   late final ProfileData profileData = Provider.of<ProfileData>(context);
-
-   
 
   void _saveUserProfile() async {
     final User? user = FirebaseAuth.instance.currentUser;
@@ -36,33 +33,26 @@ class _ProfilePageState extends State<ProfilePage> {
         'profileImageUrl': profileData.profileImageUrlController.text,
       });
 
-      Navigator.of(context).push(
-        MaterialPageRoute(
-            builder: (context) => const ProfileView(
-                  key: Key('profile_view_key'),
-                )),
-      );
     }
   }
 
-
-
   bool isEditable = false;
   bool showSpinner = false;
+  bool showImageUploaded = false;
 
   void toggleSpinner() {
     setState(() {
       showSpinner = !showSpinner;
     });
   }
-
   void editProfile() {
     print("Before editing: isEditable = $isEditable");
     setState(() {
-      isEditable = true;
+      isEditable = !isEditable;
     });
     print("After editing: isEditable = $isEditable");
   }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -105,24 +95,30 @@ class _ProfilePageState extends State<ProfilePage> {
                     height: 800,
                     child: Column(
                       children: [
-                         Padding(
-                           padding: EdgeInsets.all(20.0),
-                            child: CircleAvatar(
-                         radius: 60,
-                         backgroundColor: Color.fromARGB(255, 243, 237, 230),
-                         child: profileData
-                                 .profileImageUrlController.text.isNotEmpty
-                             ? ClipOval(
-                               child: Image.network(
-                                   profileData.profileImageUrlController.text),
-                             )
-                             : Icon(
-                                 size: 80,
-                                 Icons.person,
-                               ),
-                                                   ),
-                         ),
-                         ImageUploads(profileData: profileData, context: context),
+                        Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: CircleAvatar(
+                            radius: 60,
+                            backgroundColor: const Color.fromARGB(255, 243, 237, 230),
+                            child: profileData
+                                    .profileImageUrlController.text.isNotEmpty
+                                ? ClipOval(
+                                    child: Image.network(
+                                        profileData
+                                            .profileImageUrlController.text,
+                                        fit: BoxFit.fill,
+                                        width: 200,
+                                        height: 200),
+                                  )
+                                : const Icon(
+                                    size: 80,
+                                    Icons.person,
+                                  ),
+                          ),
+                        ),
+                        if (showImageUploaded)
+                        ImageUploads(
+                            profileData: profileData, context: context),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 25),
                           child: Theme(
@@ -135,7 +131,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 decoration: const InputDecoration(
                                   labelText: 'Username',
                                 ),
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: Color.fromARGB(255, 243, 237, 230),
                                   fontFamily: "Poppins",
                                   fontWeight: FontWeight.w100,
@@ -192,7 +188,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 decoration: const InputDecoration(
                                   labelText: 'Experience',
                                 ),
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: Color.fromARGB(255, 243, 237, 230),
                                   fontFamily: "Poppins",
                                   fontWeight: FontWeight.w100,
@@ -215,7 +211,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 decoration: const InputDecoration(
                                   labelText: 'Price',
                                 ),
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: Color.fromARGB(255, 243, 237, 230),
                                   fontFamily: "Poppins",
                                   fontWeight: FontWeight.w100,
@@ -240,7 +236,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 decoration: const InputDecoration(
                                   labelText: 'Bio',
                                 ),
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: Color.fromARGB(255, 243, 237, 230),
                                   fontFamily: "Poppins",
                                   fontWeight: FontWeight.w100,
@@ -250,30 +246,35 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                         ),
                         Container(
-                          margin: EdgeInsets.symmetric(horizontal: 25.0, vertical: 25.0),
-                          
+                          margin: const EdgeInsets.symmetric(
+                              horizontal: 25.0, vertical: 25.0),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               ElevatedButton(
                                 onPressed: editProfile,
-                                child: Text('Edit Profile'),
+                                child: const Text('Edit Profile'),
                               ),
                               ElevatedButton(
                                 onPressed: () async {
                                   toggleSpinner();
+                                  editProfile();
                                   setState(() {
                                     showSpinner = true;
+                                    showImageUploaded = true;
                                   });
                                   try {
-                                    await Future.delayed(Duration(seconds: 1));
+                                    await Future.delayed(const Duration(seconds: 1));
                                   } finally {
                                     toggleSpinner();
                                     setState(() {
                                       showSpinner = false;
-                                      print(profileData.profileImageUrlController);
+                                      
+                                      print(profileData
+                                          .profileImageUrlController);
                                     });
                                   }
+                                  
                                   _saveUserProfile();
                                 },
                                 child: const Text('Save Profile'),

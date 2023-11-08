@@ -26,11 +26,13 @@ class ProfileData extends ChangeNotifier {
 
   CollectionReference profilesCollection =
       FirebaseFirestore.instance.collection('profiles');
+    bool profileExists = false;
 
   Future<void> fetchUserProfile(String uid) async {
-    try {
+      try {
       final CollectionReference profiles =
           FirebaseFirestore.instance.collection('profiles');
+      
 
       QuerySnapshot querySnapshot =
           await profiles.where('user_id', isEqualTo: uid).get();
@@ -45,6 +47,8 @@ class ProfileData extends ChangeNotifier {
         experienceController.text = data['experience'] ?? '';
         selectedService = data['service'] ?? 'Planner';
         profileImageUrlController.text = data['profileImageUrl'] ?? '';
+        profileExists = true;
+
       } else {
         userNameController.text = '';
         priceController.text = '';
@@ -52,6 +56,8 @@ class ProfileData extends ChangeNotifier {
         experienceController.text = '';
         selectedService = 'Planner';
         profileImageUrlController.text = '';
+        profileExists = false;
+
 
       }
       notifyListeners();
