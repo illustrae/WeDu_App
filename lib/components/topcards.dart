@@ -46,7 +46,7 @@ class TopCards extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [icon,
-                  Text(style:TextStyle( fontFamily: 'Poppins', fontSize: 14, color: Color.fromARGB(255, 243, 237, 230)),text),
+                  Text(style:TextStyle( fontFamily: 'Poppins', fontSize: 14, color: Colors.black),text),
                   ]
                 ),
               ),

@@ -113,7 +113,7 @@ class _MainHomeState extends State<MainHome> {
                   style: TextStyle(
                     fontFamily: "Poppins",
                     fontSize: 14,
-                    color: Color.fromARGB(255, 13, 170, 167),
+                    color: Colors.black,
                   ),
                 ),
                 const SingleChildScrollView(
@@ -140,7 +140,7 @@ class _MainHomeState extends State<MainHome> {
                     style: TextStyle(
                       fontFamily: "Poppins",
                       fontSize: 18,
-                      color: Color.fromARGB(255, 13, 170, 167),
+                      color: Colors.black,
                     ),
                   ),
                 ),
