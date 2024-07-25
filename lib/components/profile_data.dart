@@ -40,7 +40,7 @@ class ProfileData extends ChangeNotifier {
       if (querySnapshot.docs.isNotEmpty) {
         final data = querySnapshot.docs.first.data() as Map<String, dynamic>;
 
-        // Set your text controllers or variables with the retrieved data
+       
         userNameController.text = data['username'] ?? '';
         priceController.text = data['price'] ?? '';
         bioController.text = data['bio'] ?? '';
